@@ -68,4 +68,4 @@ For details on my approach (libraries/tools used and why), see approach.txt.<br/
 ## 👤 Author
 Biên Bèo <br/>
 📧 bientran.dev@gmail.com <br/>
-🔗 [Portfolio] (https://bienbeo.vercel.app/)<br/>
+🔗 [Portfolio](https://bienbeo.vercel.app/)<br/>
