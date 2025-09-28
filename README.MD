@@ -17,8 +17,8 @@ src/<br/>
 ├── config/ # Refine theme and resources config<br/>
 ├── hooks/ # Custom hooks <br/>
 ├── pages/ # Main pages <br/>
-│   &nbsp;&nbsp;&nbsp;├── albums/ # Album list & detail<br/>
-│   &nbsp;&nbsp;&nbsp;└── users/ # User list & detail<br/>
+│   &nbsp;&nbsp;&nbsp;&nbsp;├── albums/ # Album list & detail<br/>
+│   &nbsp;&nbsp;&nbsp;&nbsp;└── users/ # User list & detail<br/>
 ├── utils/ # Utility functions <br/>
 ├── App.tsx # Root component<br/>
 └── index.tsx # Entry point<br/>
