@@ -1,5 +1,4 @@
-import { GitHubBanner, Refine } from "@refinedev/core";
-import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
+import { Refine } from "@refinedev/core";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 
 import {
@@ -9,6 +8,9 @@ import {
   useNotificationProvider,
 } from "@refinedev/antd";
 import "@refinedev/antd/dist/reset.css";
+import "./styles/index.css";
+import { appTheme } from "./config/theme";
+import { Space, Typography, ConfigProvider } from "antd";
 
 import routerProvider, {
   DocumentTitleHandler,
@@ -17,103 +19,78 @@ import routerProvider, {
 } from "@refinedev/react-router";
 import dataProvider from "@refinedev/simple-rest";
 import { App as AntdApp } from "antd";
-import { BrowserRouter, Outlet, Route, Routes } from "react-router";
+import { BrowserRouter, Outlet, Route, Routes, Link } from "react-router";
 import { Header } from "./components/header";
-import { ColorModeContextProvider } from "./contexts/color-mode";
-import {
-  BlogPostCreate,
-  BlogPostEdit,
-  BlogPostList,
-  BlogPostShow,
-} from "./pages/blog-posts";
-import {
-  CategoryCreate,
-  CategoryEdit,
-  CategoryList,
-  CategoryShow,
-} from "./pages/categories";
+import { appResources } from "./config/resources.tsx";
+import { AlbumList, AlbumShow } from "./pages/albums";
+import { UserList, UserShow } from "./pages/users";
+
+const API_URL = import.meta.env.VITE_API_URL;
+
+const CustomTitle = () => (
+  <Space align="center">
+    <Link to="/">
+      <img
+        width="100"
+        src="https://geekup.vn/Icons/geekup-logo-general.svg"
+        alt="GEEK Up - PF GI"
+      />
+    </Link>
+  </Space>
+);
 
 function App() {
   return (
-    <BrowserRouter>
-      <GitHubBanner />
-      <RefineKbarProvider>
-        <ColorModeContextProvider>
+    <ConfigProvider theme={appTheme}>
+      <BrowserRouter>
+        <RefineKbarProvider>
           <AntdApp>
-            <DevtoolsProvider>
-              <Refine
-                dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
-                notificationProvider={useNotificationProvider}
-                routerProvider={routerProvider}
-                resources={[
-                  {
-                    name: "blog_posts",
-                    list: "/blog-posts",
-                    create: "/blog-posts/create",
-                    edit: "/blog-posts/edit/:id",
-                    show: "/blog-posts/show/:id",
-                    meta: {
-                      canDelete: true,
-                    },
-                  },
-                  {
-                    name: "categories",
-                    list: "/categories",
-                    create: "/categories/create",
-                    edit: "/categories/edit/:id",
-                    show: "/categories/show/:id",
-                    meta: {
-                      canDelete: true,
-                    },
-                  },
-                ]}
-                options={{
-                  syncWithLocation: true,
-                  warnWhenUnsavedChanges: true,
-                  projectId: "yKjAbA-0oGplQ-AWuuiz",
-                }}
-              >
-                <Routes>
+            <Refine
+              dataProvider={dataProvider(API_URL)}
+              notificationProvider={useNotificationProvider}
+              routerProvider={routerProvider}
+              resources={appResources}
+              options={{
+                syncWithLocation: true,
+                warnWhenUnsavedChanges: true,
+              }}
+            >
+              <Routes>
+                <Route
+                  element={
+                    <ThemedLayout
+                      Title={() => <CustomTitle />}
+                      Header={() => <Header sticky />}
+                      Sider={(props) => <ThemedSider {...props} fixed />}
+                    >
+                      <Outlet />
+                    </ThemedLayout>
+                  }
+                >
                   <Route
-                    element={
-                      <ThemedLayout
-                        Header={() => <Header sticky />}
-                        Sider={(props) => <ThemedSider {...props} fixed />}
-                      >
-                        <Outlet />
-                      </ThemedLayout>
-                    }
-                  >
-                    <Route
-                      index
-                      element={<NavigateToResource resource="blog_posts" />}
-                    />
-                    <Route path="/blog-posts">
-                      <Route index element={<BlogPostList />} />
-                      <Route path="create" element={<BlogPostCreate />} />
-                      <Route path="edit/:id" element={<BlogPostEdit />} />
-                      <Route path="show/:id" element={<BlogPostShow />} />
-                    </Route>
-                    <Route path="/categories">
-                      <Route index element={<CategoryList />} />
-                      <Route path="create" element={<CategoryCreate />} />
-                      <Route path="edit/:id" element={<CategoryEdit />} />
-                      <Route path="show/:id" element={<CategoryShow />} />
-                    </Route>
-                    <Route path="*" element={<ErrorComponent />} />
+                    index
+                    element={<NavigateToResource resource="albums" />}
+                  />
+                  <Route path="/albums">
+                    <Route index element={<AlbumList />} />
+                    <Route path=":id" element={<AlbumShow />} />
                   </Route>
-                </Routes>
+                  <Route path="/users">
+                    <Route index element={<UserList />} />
+                    <Route path=":id" element={<UserShow />} />
+                  </Route>
+                  <Route path="*" element={<ErrorComponent />} />
+                </Route>
+              </Routes>
 
-                <RefineKbar />
-                <UnsavedChangesNotifier />
-                <DocumentTitleHandler />
-              </Refine>
-              <DevtoolsPanel />
-            </DevtoolsProvider>
+              <RefineKbar />
+              <UnsavedChangesNotifier />
+              <DocumentTitleHandler />
+            </Refine>
           </AntdApp>
-        </ColorModeContextProvider>
-      </RefineKbarProvider>
-    </BrowserRouter>
+        </RefineKbarProvider>
+      </BrowserRouter>
+    </ConfigProvider>
   );
 }
 
